@@ -1,0 +1,112 @@
+﻿@page
+@using System.Web
+@model PostDetailsModel
+@{
+    ViewData["Title"] = Model.Post.Title;
+}
+
+<div class="container mt-5">
+    <h1>@Model.Post.Title</h1>
+    @if (Model.Post.UserId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value || User.IsInRole("Admin"))
+    {
+        <a href="/Admin/DeletePost/@Model.Post.Id" class="btn btn-danger mt-3">Usuń post</a>
+
+        <a href="/Admin/EditPost/@Model.Post.Id" class="btn btn-warning mt-3">Edytuj post</a>
+    }
+    <p class="text-muted">Dodano: @Model.Post.CreatedDate.ToString("yyyy-MM-dd HH:mm")</p>
+    <p>Kategoria: @Model.Post.Category</p>
+    <p>@Html.Raw(Model.Post.Content)</p>
+
+    <h3 class="mt-4">Galeria</h3>
+    <div class="row">
+        @foreach (var image in Model.Post.PostImages)
+        {
+            <div class="col-md-4 mb-3">
+                <img class="img-fluid" src="@image.ImageUrl" alt="Zdjęcie">
+            </div>
+        }
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.Post.MapLink))
+    {
+        <h3>Mapa Google</h3>
+        <div class="map-container" style="height: 400px;">
+            <iframe src="@Model.Post.MapLink"
+                    width="100%"
+                    height="300"
+                    style="border:0;"
+                    allowfullscreen=""
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.Post.VideoLink))
+    {
+        <h3>Film YouTube</h3>
+        <div class="embed-responsive embed-responsive-16by9">
+            <iframe class="embed-responsive-item" src="@Model.Post.VideoLink"
+                    allowfullscreen
+                    width="100%"
+                    height="300"></iframe>
+        </div>
+    }
+
+    <h3 class="mt-4">Komentarze</h3>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <form method="post" asp-page-handler="AddComment">
+            <!-- Dodane ukryte pole z id posta -->
+            <input type="hidden" name="id" value="@Model.Post.Id" />
+            <div class="form-group">
+                <label for="Content">Dodaj komentarz</label>
+                <textarea name="Content" class="form-control" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">Dodaj</button>
+        </form>
+    }
+    else
+    {
+        <p>Aby dodać komentarz, musisz się zalogować.</p>
+    }
+    <div>
+        @if (Model.Comment != null && Model.Comment.Any())
+        {
+            <ul class="list-group">
+                @foreach (var comment in Model.Comment)
+                {
+                    <li class="list-group-item">
+                        <p><strong>@comment.User.FirstName @comment.User.LastName</strong> napisał(a):</p>
+                        <p>@comment.Content</p>
+                        <small>@(comment.UpdatedAt.HasValue ? $"Edytowano: {comment.UpdatedAt}" : $"Dodano: {comment.CreatedAt}")</small>
+
+                        <!-- Edytowanie i usuwanie -->
+                        @if (comment.UserId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value || User.IsInRole("Admin") || Model.Post.UserId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)
+                        {
+                            <form method="post" asp-page-handler="DeleteComment" style="display: inline;">
+                                <input type="hidden" name="commentId" value="@comment.Id" />
+                                <input type="hidden" name="id" value="@Model.Post.Id" />
+                                <button type="submit" class="btn btn-danger btn-sm">Usuń</button>
+                            </form>
+                        }
+
+                        @if (comment.UserId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)
+                        {
+                            <form method="post" asp-page-handler="EditComment" style="display: inline;">
+                                <input type="hidden" name="commentId" value="@comment.Id" />
+                                <input type="hidden" name="id" value="@Model.Post.Id" />
+                                <input type="text" name="updatedContent" class="form-control" placeholder="Nowa treść..." required />
+                                <button type="submit" class="btn btn-primary btn-sm">Edytuj</button>
+                            </form>
+                        }
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p>Brak komentarzy.</p>
+        }
+    </div>
+</div>

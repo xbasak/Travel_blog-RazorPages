@@ -1,0 +1,78 @@
+﻿@page "{id:int}"
+@model EditPostModel
+@{
+    ViewData["Title"] = "Edytuj post";
+}
+
+<h1>Edytuj post</h1>
+
+<form method="post" enctype="multipart/form-data">
+
+    <input type="hidden" asp-for="Post.Id" />
+
+    <!-- Tytuł posta -->
+    <div class="form-group">
+        <label for="Title">Tytuł</label>
+        <input asp-for="Post.Title" class="form-control" />
+        <span asp-validation-for="Post.Title" class="text-danger"></span>
+    </div>
+
+    <!-- Treść posta -->
+    <div class="form-group">
+        <label for="Content">Treść</label>
+        <textarea id="Content" asp-for="Post.Content" class="form-control"></textarea>
+        <span asp-validation-for="Post.Content" class="text-danger"></span>
+    </div>
+
+    <!-- Link do Google Maps -->
+    <div class="form-group">
+        <label for="GoogleMapsLink">Link do Google Maps</label>
+        <input asp-for="Post.MapLink" class="form-control" />
+        <span asp-validation-for="Post.MapLink" class="text-danger"></span>
+    </div>
+
+    <!-- Link do YouTube -->
+    <div class="form-group">
+        <label for="YouTubeLink">Link do YouTube</label>
+        <input asp-for="Post.VideoLink" class="form-control" />
+        <span asp-validation-for="Post.VideoLink" class="text-danger"></span>
+    </div>
+
+    <!-- Zdjęcia istniejące -->
+    <h3>Istniejące zdjęcia</h3>
+    <div class="row">
+        @foreach (var image in Model.Post.PostImages)
+        {
+            <div class="col-md-4 mb-4">
+                <img src="@image.ImageUrl" class="img-fluid" alt="Zdjęcie">
+                <button type="button" class="btn btn-danger mt-2" onclick="removeImage(@image.Id)">Usuń</button>
+            </div>
+        }
+    </div>
+
+    <!-- Dodawanie nowych zdjęć -->
+    <div class="form-group">
+        <label for="Images">Dodaj nowe zdjęcia</label>
+        <input type="file" name="UploadedImages" multiple class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
+</form>
+
+<script src="https://cdn.tiny.cloud/1/@ViewData["TinyMCEApiKey"]/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+    tinymce.init({
+        selector: '#Content',
+        plugins: 'link image lists table code',
+        toolbar: 'undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist outdent indent | link image | code',
+        height: 500
+    });
+
+    function removeImage(imageId) {
+        fetch(`/ImageController/RemoveImage?id=${imageId}`, { method: 'DELETE' })
+            .then(response => {
+                if (response.ok) location.reload();
+                else alert('Nie udało się usunąć zdjęcia.');
+            });
+    }
+</script>

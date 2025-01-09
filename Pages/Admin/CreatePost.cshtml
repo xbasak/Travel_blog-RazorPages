@@ -1,0 +1,50 @@
+﻿@page
+@model CreatePostModel
+@{
+    ViewData["Title"] = "Utwórz nowy post";
+}
+
+<h1>Utwórz nowy post</h1>
+
+<form method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="Title">Tytuł</label>
+        <input asp-for="Post.Title" class="form-control" />
+        <span asp-validation-for="Post.Title" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="Content">Treść</label>
+        <textarea id="Content" asp-for="Post.Content" class="form-control"></textarea>
+        <span asp-validation-for="Post.Content" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="Images">Zdjęcia</label>
+        <input type="file" name="UploadedImages" multiple class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="GoogleMapsLink">Link do Google Maps</label>
+        <input asp-for="Post.MapLink" class="form-control" />
+        <span asp-validation-for="Post.MapLink" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="YouTubeLink">Link do YouTube</label>
+        <input asp-for="Post.VideoLink" class="form-control" />
+        <span asp-validation-for="Post.VideoLink" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Dodaj post</button>
+
+</form>
+
+
+<!-- TinyMCE integration -->
+<script src="https://cdn.tiny.cloud/1/@ViewData["TinyMCEApiKey"]/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+    tinymce.init({
+        selector: '#Content', // Id pola textarea
+        plugins: 'link image lists table code', // Dodanie wtyczek
+        toolbar: 'undo redo | bold italic underline | alignleft aligncenter alignright | bullist numlist outdent indent | link image | code', // Pasek narzędzi
+        height: 500
+    });
+</script>

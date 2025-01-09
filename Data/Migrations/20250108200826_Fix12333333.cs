@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Travel_Blog.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class AddComments : Migration
+    public partial class Fix12333333 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,6 +19,13 @@ namespace Travel_Blog.Data.Migrations
                 name: "CreatedDate",
                 table: "Comment",
                 newName: "UpdatedAt");
+
+            migrationBuilder.AddColumn<string>(
+                name: "UserId",
+                table: "Posts",
+                type: "nvarchar(450)",
+                nullable: false,
+                defaultValue: "");
 
             migrationBuilder.AlterColumn<string>(
                 name: "Content",
@@ -45,6 +52,11 @@ namespace Travel_Blog.Data.Migrations
                 defaultValue: "");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Posts_UserId",
+                table: "Posts",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Comment_UserId",
                 table: "Comment",
                 column: "UserId");
@@ -52,6 +64,13 @@ namespace Travel_Blog.Data.Migrations
             migrationBuilder.AddForeignKey(
                 name: "FK_Comment_AspNetUsers_UserId",
                 table: "Comment",
+                column: "UserId",
+                principalTable: "AspNetUsers",
+                principalColumn: "Id");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Posts_AspNetUsers_UserId",
+                table: "Posts",
                 column: "UserId",
                 principalTable: "AspNetUsers",
                 principalColumn: "Id",
@@ -65,9 +84,21 @@ namespace Travel_Blog.Data.Migrations
                 name: "FK_Comment_AspNetUsers_UserId",
                 table: "Comment");
 
+            migrationBuilder.DropForeignKey(
+                name: "FK_Posts_AspNetUsers_UserId",
+                table: "Posts");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Posts_UserId",
+                table: "Posts");
+
             migrationBuilder.DropIndex(
                 name: "IX_Comment_UserId",
                 table: "Comment");
+
+            migrationBuilder.DropColumn(
+                name: "UserId",
+                table: "Posts");
 
             migrationBuilder.DropColumn(
                 name: "CreatedAt",

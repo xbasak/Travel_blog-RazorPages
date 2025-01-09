@@ -1,4 +1,4 @@
-﻿@page
+﻿@* @page
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
@@ -7,4 +7,38 @@
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+ *@
+
+ @page
+@model IndexModel
+@{
+    ViewData["Title"] = "Strona główna";
+}
+
+<div class="container mt-5">
+    <h1 class="mb-4">Ostatnie posty</h1>
+    <div class="row">
+        @foreach (var post in Model.Posts)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img class="card-img-top" src="@post.PostImages.FirstOrDefault()?.ImageUrl" alt="@post.Title">
+                    <div class="card-body">
+                        <h5 class="card-title">@post.Title</h5>
+                        <p>@post.CreatedDate.ToString("dd-MM-yyyy HH:mm")</p>
+                        <p class="card-text">@Html.Raw(post.Content.Substring(0, Math.Min(post.Content.Length, 100)))...</p>
+
+                    </div>
+                    <div>
+                        <a href="/PostDetails?id=@post.Id" class="btn btn-primary">Czytaj więcej</a>
+                    </div>
+                    @if (post.UserId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value || User.IsInRole("Admin"))
+                    {
+                        <a href="/Admin/EditPost/@post.Id" class="btn btn-warning mt-2">Edytuj</a>
+                    }
+                </div>
+            </div>
+        }
+    </div>
 </div>
