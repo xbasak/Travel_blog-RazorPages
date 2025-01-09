@@ -73,13 +73,36 @@ public class PostDetailsModel : PageModel
         return RedirectToPage(new { id });
     }
 
-    public async Task<IActionResult> OnPostEditCommentAsync(int commentId, string updatedContent, int id)
+    //public async Task<IActionResult> OnPostEditCommentAsync(int commentId, string updatedContent, int id)
+    //{
+    //    var comment = await _context.Comment.FindAsync(commentId);
+
+    //    if (comment == null || comment.UserId != User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)
+    //    {
+    //        return Forbid();
+    //    }
+
+    //    comment.Content = updatedContent;
+    //    comment.UpdatedAt = DateTime.Now;
+
+    //    await _context.SaveChangesAsync();
+
+    //    return RedirectToPage(new { id });
+    //}
+
+    public async Task<IActionResult> OnPostEditCommentAsync(int commentId, string updatedContent)
     {
         var comment = await _context.Comment.FindAsync(commentId);
 
-        if (comment == null || comment.UserId != User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)
+        if (comment == null)
         {
-            return Forbid();
+            return NotFound();
+        }
+
+        var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        if (comment.UserId != currentUserId)
+        {
+            return Forbid(); // Tylko autor komentarza mo¿e edytowaæ
         }
 
         comment.Content = updatedContent;
@@ -87,7 +110,8 @@ public class PostDetailsModel : PageModel
 
         await _context.SaveChangesAsync();
 
-        return RedirectToPage(new { id });
+        return RedirectToPage(new { id = comment.PostId });
     }
+
 
 }

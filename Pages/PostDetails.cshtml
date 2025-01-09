@@ -18,11 +18,13 @@
     <p>@Html.Raw(Model.Post.Content)</p>
 
     <h3 class="mt-4">Galeria</h3>
-    <div class="row">
+    <div class="slider">
         @foreach (var image in Model.Post.PostImages)
         {
-            <div class="col-md-4 mb-3">
-                <img class="img-fluid" src="@image.ImageUrl" alt="Zdjęcie">
+            <div>
+                <a href="@image.ImageUrl" data-lightbox="slider">
+                    <img src="@image.ImageUrl" alt="Zdjęcie">
+                </a>
             </div>
         }
     </div>
@@ -73,36 +75,35 @@
     <div>
         @if (Model.Comment != null && Model.Comment.Any())
         {
-            <ul class="list-group">
+            <div class="list-group">
                 @foreach (var comment in Model.Comment)
                 {
-                    <li class="list-group-item">
-                        <p><strong>@comment.User.FirstName @comment.User.LastName</strong> napisał(a):</p>
-                        <p>@comment.Content</p>
-                        <small>@(comment.UpdatedAt.HasValue ? $"Edytowano: {comment.UpdatedAt}" : $"Dodano: {comment.CreatedAt}")</small>
+                    <div class="list-group-item">
+                        <div id="comment-display-@comment.Id">
+                            <p><strong>@comment.User.FirstName @comment.User.LastName</strong>  <small>@(comment.UpdatedAt.HasValue ? $"Edytowano: {comment.UpdatedAt}" : $"{comment.CreatedAt}")</small></p>
+                            <p>@comment.Content</p>
+                        </div>
 
-                        <!-- Edytowanie i usuwanie -->
-                        @if (comment.UserId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value || User.IsInRole("Admin") || Model.Post.UserId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)
-                        {
-                            <form method="post" asp-page-handler="DeleteComment" style="display: inline;">
+
+                        <div id="comment-edit-@comment.Id" style="display: none;">
+                            <form method="post" asp-page-handler="EditComment">
                                 <input type="hidden" name="commentId" value="@comment.Id" />
-                                <input type="hidden" name="id" value="@Model.Post.Id" />
-                                <button type="submit" class="btn btn-danger btn-sm">Usuń</button>
+                                <textarea name="updatedContent" class="form-control">@comment.Content</textarea>
+                                <button type="submit" class="btn btn-primary btn-sm mt-2">Zapisz</button>
+                                <button type="button" class="btn btn-secondary btn-sm mt-2" onclick="cancelEdit(@comment.Id)">Anuluj</button>
                             </form>
-                        }
+                        </div>
+
 
                         @if (comment.UserId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)
                         {
-                            <form method="post" asp-page-handler="EditComment" style="display: inline;">
-                                <input type="hidden" name="commentId" value="@comment.Id" />
-                                <input type="hidden" name="id" value="@Model.Post.Id" />
-                                <input type="text" name="updatedContent" class="form-control" placeholder="Nowa treść..." required />
-                                <button type="submit" class="btn btn-primary btn-sm">Edytuj</button>
-                            </form>
+                            <button class="btn btn-link btn-sm text-decoration-none" onclick="enableEdit(@comment.Id)">
+                                ✏️ Edytuj
+                            </button>
                         }
-                    </li>
+                    </div>
                 }
-            </ul>
+            </div>
         }
         else
         {
@@ -110,3 +111,10 @@
         }
     </div>
 </div>
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+    <script src="/js/comments.js" defer></script>
+    <script src="/js/slider.js" defer></script>
+}
