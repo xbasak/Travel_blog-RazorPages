@@ -6,7 +6,7 @@
 }
 
 <h3>@ViewData["Title"]</h3>
-<partial name="_StatusMessage" for="StatusMessage" />
+<partial name="_StatusMessage" for="StatusMessage"> </partial>
 <div class="row">
     <div class="col-md-6">
         <form id="email-form" method="post">
@@ -26,7 +26,7 @@
                 <div class="form-floating mb-3">
                     <input asp-for="Email" class="form-control" placeholder="Please enter your email." disabled />
                     <label asp-for="Email" class="form-label"></label>
-                    <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="btn btn-link">Send verification email</button>
+                    @* <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="btn btn-link">Send verification email</button> *@
                 </div>
             }
             <div class="form-floating mb-3">

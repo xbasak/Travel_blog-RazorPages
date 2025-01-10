@@ -169,3 +169,65 @@ form {
     border-color: transparent;
     border-radius: 1rem;
 }
+
+
+.image-container {
+    width: 100%;
+    height: 200px;
+    overflow: hidden; /* Ukrywa nadmiar zdjêcia */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+    .image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+.read-more, .register-login, .custom-header{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    margin-bottom: 5px;
+}
+
+#custom-footer 
+{
+    text-align:center;
+    justify-content:center;
+}
+
+.slider img {
+    width: 100%; 
+    height: 420px;
+    object-fit: cover; 
+    object-position: center;
+}
+
+#custom-button
+{
+    margin-top:8px;
+}
+
+.card {
+    -webkit-box-shadow: 2px 5px 8px -1px rgba(66, 68, 90, 1);
+    -moz-box-shadow: 2px 5px 8px -1px rgba(66, 68, 90, 1);
+    box-shadow: 2px 5px 8px -1px rgba(66, 68, 90, 1);
+}
+
+.btn-link.text-danger {
+    font-size: 1.2em;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+    .btn-link.text-danger:hover {
+        color: red;
+    }

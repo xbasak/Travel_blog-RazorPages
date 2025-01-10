@@ -29,25 +29,37 @@ namespace Travel_Blog.Pages.Admin
 
         [BindProperty]
         public Post Post { get; set; }
+        [BindProperty]                
+        public string? UserId { get; set; }
 
         public IActionResult OnGet()
         {
             ViewData["TinyMCEApiKey"] = _configuration["TinyMCE:ApiKey"];
+            UserId = _userManager.GetUserId(User);
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            //if (!ModelState.IsValid)
-            //{
-            //    return Page();
-            //}
-
             var currentUser = await _userManager.GetUserAsync(User);
+            Post.UserId = currentUser.Id; // Przypisanie u¿ytkownika tworz¹cego post
+            if (!ModelState.IsValid)
+            {
+                foreach (var modelState in ModelState.Values)
+                {
+                    foreach (var error in modelState.Errors)
+                    {
+                        Console.WriteLine($"Walidacja b³êdu: {error.ErrorMessage}");
+                    }
+                }
+                ViewData["TinyMCEApiKey"] = _configuration["TinyMCE:ApiKey"];
+                return Page();
+            }
+
+            
 
 
             Post.CreatedDate = DateTime.Now;
-            Post.UserId = currentUser.Id; // Przypisanie u¿ytkownika tworz¹cego post
             _context.Posts.Add(Post);
 
             if (UploadedImages != null && UploadedImages.Count > 0)

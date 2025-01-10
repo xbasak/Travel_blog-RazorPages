@@ -8,7 +8,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Travel_Blog</title>
+    <title>@ViewData["Title"] - Travel Blog</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css" />
@@ -42,7 +42,7 @@
                 </div>
                 @if (User.IsInRole("User"))
                 {
-                    <a href="/Admin/CreatePost" class="btn btn-success">Dodaj post</a>
+                    <a href="/Admin/CreatePost" class="btn ">Dodaj post</a>
                 }
             </div>
         </nav>
@@ -53,15 +53,17 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer id ="custom-footer" class="border-top footer text-muted">
         <div class="container">
-            &copy; 2024 - Travel_Blog - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            &copy; 2024 - Travel Blog - Arkadiusz Basak
         </div>
     </footer>
     
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

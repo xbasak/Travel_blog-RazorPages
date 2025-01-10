@@ -1,10 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Travel_Blog.Model
 {
     public class Comment
     {
         public int Id { get; set; }
+        [Required(ErrorMessage = "Treść komentarza jest wymagana.")]
         public string Content { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
