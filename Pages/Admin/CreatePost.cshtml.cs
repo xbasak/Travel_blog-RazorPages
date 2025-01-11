@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -42,7 +41,7 @@ namespace Travel_Blog.Pages.Admin
         public async Task<IActionResult> OnPostAsync()
         {
             var currentUser = await _userManager.GetUserAsync(User);
-            Post.UserId = currentUser.Id; // Przypisanie u¿ytkownika tworz¹cego post
+            Post.UserId = currentUser.Id;
             if (!ModelState.IsValid)
             {
                 foreach (var modelState in ModelState.Values)
@@ -92,7 +91,7 @@ namespace Travel_Blog.Pages.Admin
 
             await _context.SaveChangesAsync();
 
-            return RedirectToPage("/Index"); // Przekierowanie na stronê g³ówn¹
+            return RedirectToPage("/Index");
         }
     }
 }

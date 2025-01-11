@@ -17,7 +17,6 @@ namespace Travel_Blog.Pages
         public List<Post> Posts { get; set; }
         public async Task OnGetAsync()
         {
-            // Pobranie postów z bazy danych wraz z powi¹zanymi obrazami
             Posts = await _context.Posts
                                   .Include(p => p.PostImages)
                                   .Include(c => c.User)
