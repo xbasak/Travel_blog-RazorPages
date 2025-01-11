@@ -63,6 +63,8 @@
     {
         <form method="post" asp-page-handler="AddComment">
             <input type="hidden" name="id" value="@Model.Post.Id" />
+            <input type="hidden" name="UserId" value="@Model.Post.UserId)" />
+            <input type="hidden" name="Title" value="_" />
             <div class="form-group">
                 <label for="Content">Add a comment</label>
                 <textarea name="Content" class="form-control" required></textarea>
@@ -93,7 +95,10 @@
                             <form method="post" asp-page-handler="DeleteComment" style="display: inline;">
                                 <input type="hidden" name="commentId" value="@comment.Id" />
                                 <input type="hidden" name="id" value="@Model.Post.Id" />
-                                <button type="submit" class="btn btn-link btn-sm text-danger text-decoration-none" title="Delete">
+                                <input type="hidden" name="UserId" value="@Model.Post.UserId)" />
+                                <input type="hidden" name="Content" value="_" />
+                                <input type="hidden" name="Title" value="_" />
+                                <button type="submit" class="btn btn-link btn-sm text-danger text-decoration-none custom-edit" title="Delete">
                                     🗑️
                                 </button>
                             </form>
@@ -103,6 +108,8 @@
                             <form method="post" asp-page-handler="EditComment" onsubmit="return validateComment(@comment.Id);">
                                 <input type="hidden" name="postId" value="@Model.Post.Id" />
                                 <input type="hidden" name="UserId" value="@comment.UserId" />
+                                <input type="hidden" name="Content" value="_" />
+                                <input type="hidden" name="Title" value="_" />
 
                                 <input type="hidden" name="commentId" value="@comment.Id" />
                                 <textarea id="edit-content-@comment.Id" name="updatedContent" class="form-control">@comment.Content</textarea>
@@ -115,8 +122,8 @@
 
                         @if (comment.UserId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)
                         {
-                            <button class="btn btn-link btn-sm text-decoration-none" onclick="enableEdit(@comment.Id)">
-                                ✏️ Edit
+                            <button class="btn btn-link btn-sm text-decoration-none custom-edit" onclick="enableEdit(@comment.Id)">
+                                ✏️
                             </button>
                         }
                     </div>

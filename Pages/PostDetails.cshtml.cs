@@ -1,10 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration.UserSecrets;
-using System.Threading.Tasks;
 using Travel_Blog.Data;
 using Travel_Blog.Model;
 
@@ -45,12 +42,18 @@ public class PostDetailsModel : PageModel
 
     public void GetPostOwner(string userId)
     {
-        PostOwner = _userManager.Users.FirstOrDefault(x => x.Id == userId);
+        PostOwner = _userManager.Users.FirstOrDefault(x => x.Id == userId) ?? null;
     }
 
     public async Task<IActionResult> OnPostAddCommentAsync(int id)
     {
         var currentUser = await _userManager.GetUserAsync(User);
+
+        if (!Validation())
+        {
+            return RedirectToPage(new { id });
+        }
+            
 
         var comment = new Comment
         {
@@ -68,22 +71,7 @@ public class PostDetailsModel : PageModel
 
     public async Task<IActionResult> OnPostDeleteCommentAsync(int commentId, int id)
     {
-        var comment = await _context.Comment.FindAsync(commentId);
 
-        if (comment == null || (comment.UserId != User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value && !User.IsInRole("Admin") && Post.UserId != User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value))
-        {
-            return Forbid();
-        }
-
-        _context.Comment.Remove(comment);
-        await _context.SaveChangesAsync();
-
-        return RedirectToPage(new { id });
-    }
-
-    public async Task<IActionResult> OnPostEditCommentAsync(int commentId, string updatedContent)
-    {
-        Post = Post;
         var comment = await _context.Comment.FindAsync(commentId);
 
         if (comment == null)
@@ -91,24 +79,50 @@ public class PostDetailsModel : PageModel
             return NotFound();
         }
 
-        if (!ModelState.IsValid)
+        var post = await _context.Posts.FirstOrDefaultAsync(p => p.Id == comment.PostId);
+        if (post == null)
         {
-            foreach (var modelState in ModelState.Values)
-            {
-                foreach (var error in modelState.Errors)
-                {
-                    Console.WriteLine($"Walidacja b³êdu: {error.ErrorMessage}");
-                }
-            }
+            return NotFound();
+        }
+
+        if (!Validation())
+        {
             return RedirectToPage(new { id = comment.PostId });
         }
 
-        
+        var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        bool isPostOwner = post.UserId == currentUserId;
+        bool isCommentOwner = comment.UserId == currentUserId;
+        bool isAdmin = User.IsInRole("Admin");
+
+        if (!isCommentOwner && !isPostOwner && !isAdmin)
+        {
+            return Forbid();
+        }
+
+        _context.Comment.Remove(comment);
+        await _context.SaveChangesAsync();
+
+        return RedirectToPage(new { id = post.Id });
+    }
+
+    public async Task<IActionResult> OnPostEditCommentAsync(int commentId, string updatedContent)
+    {
+        var comment = await _context.Comment.FindAsync(commentId);
+
+        if (comment == null)
+        {
+            return NotFound();
+        }
+
+        if (!Validation())
+            return RedirectToPage(new { id = comment.PostId });
+
 
         var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
         if (comment.UserId != currentUserId)
         {
-            return Forbid(); // Tylko autor komentarza mo¿e edytowaæ
+            return Forbid();
         }
 
         comment.Content = updatedContent;
@@ -119,5 +133,19 @@ public class PostDetailsModel : PageModel
         return RedirectToPage(new { id = comment.PostId });
     }
 
-
+    public bool Validation()
+    {
+        if (!ModelState.IsValid)
+        {
+            foreach (var modelState in ModelState.Values)
+            {
+                foreach (var error in modelState.Errors)
+                {
+                    Console.WriteLine($"Walidacja b³êdu: {error.ErrorMessage}");
+                }
+            }
+            return false;
+        }
+        return true;
+    }
 }
