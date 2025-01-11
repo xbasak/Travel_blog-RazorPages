@@ -14,9 +14,9 @@
 
         <a href="/Admin/EditPost/@Model.Post.Id" class="btn btn-warning mt-3">Edit post</a>
     }
-    <p class="text-muted">@Model.Post.CreatedDate.ToString("yyyy-MM-dd HH:mm") <img src="img/user.png" > @Model.PostOwner.FirstName @Model.PostOwner.LastName</p>
+    <p class="text-muted">@Model.Post.CreatedDate.ToString("yyyy-MM-dd HH:mm") <img src="img/user.png" alt="user_icon"> @Model.PostOwner.FirstName @Model.PostOwner.LastName</p>
     <hr >
-    <p>@Html.Raw(Model.Post.Content)</p>
+    <div>@Html.Raw(Model.Post.Content)</div>
     @if (Model.Post.PostImages.Count != 0)
     {
         <h3 class="mt-4">Photo gallery</h3>
@@ -37,7 +37,7 @@
         <h3>Map</h3>
         <div class="map-container" style="height: 400px;">
             <iframe src="@Model.Post.MapLink"
-                    width="100%"
+                    class="w-100"
                     height="300"
                     style="border:0;"
                     allowfullscreen=""
@@ -51,9 +51,9 @@
     {
         <h3>Video</h3>
         <div class="embed-responsive embed-responsive-16by9">
-            <iframe class="embed-responsive-item" src="@Model.Post.VideoLink"
+            <iframe class="embed-responsive-item w-100" src="@Model.Post.VideoLink"
                     allowfullscreen
-                    width="100%"
+                   
                     height="300"></iframe>
         </div>
     }
@@ -67,7 +67,8 @@
             <input type="hidden" name="Title" value="_" >
             <div class="form-group">
                 <label for="Content">Add a comment</label>
-                <textarea name="Content" class="form-control" required></textarea>
+                <textarea asp-for="Content" class="form-control" required></textarea>
+                <span asp-validation-for="Content" class="text-danger"></span>
             </div>
             <button type="submit" class="btn btn-primary mt-2">Add</button>
         </form>
@@ -84,8 +85,8 @@
                 {
                     <div class="list-group-item">
                         <div id="comment-display-@comment.Id">
-                            <p><img src="img/user2.png" ><strong>   @comment.User.FirstName @comment.User.LastName</strong>  <small>@(comment.UpdatedAt.HasValue ? $"Edytowano: {comment.UpdatedAt}" : $"{comment.CreatedAt}")</small></p>
-                            <p>@comment.Content</p>
+                            <p><img src="img/user2.png" alt="user_icon2"><strong>   @comment.User.FirstName @comment.User.LastName</strong>  <small>@(comment.UpdatedAt.HasValue ? $"Edytowano: {comment.UpdatedAt}" : $"{comment.CreatedAt}")</small></p>
+                            <div>@comment.Content</div>
                         </div>
 
                         @if (comment.UserId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value

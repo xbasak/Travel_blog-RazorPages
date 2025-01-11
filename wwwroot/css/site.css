@@ -196,10 +196,14 @@ form {
     margin-bottom: 5px;
 }
 
-#custom-footer 
-{
-    text-align:center;
-    justify-content:center;
+#custom-footer {
+    text-align: center;
+    justify-content: center;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px;
 }
 
 .slider img {
@@ -230,4 +234,9 @@ form {
 
     .btn-link.text-danger:hover {
         color: red;
+    }
+
+
+    .w-100{
+        width:100%
     }

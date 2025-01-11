@@ -53,7 +53,6 @@ public class PostDetailsModel : PageModel
         {
             return RedirectToPage(new { id });
         }
-            
 
         var comment = new Comment
         {

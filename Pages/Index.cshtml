@@ -18,7 +18,7 @@
                     </div>
                     <div class="card-body">
                         <h5 class="card-title">@post.Title</h5>
-                        <p>@post.CreatedDate.ToString("dd-MM-yyyy HH:mm") <img src="img/user.png" > @post.User.FirstName @post.User.LastName</p>
+                        <p>@post.CreatedDate.ToString("dd-MM-yyyy HH:mm") <img src="img/user.png" alt="user_icon"> @post.User.FirstName @post.User.LastName</p>
                         <p class="card-text">
                             @Html.Raw(Regex.Replace(post.Content.Substring(0, Math.Min(post.Content.Length, 100)), @"<[^>]*>", string.Empty))...
                         </p>
