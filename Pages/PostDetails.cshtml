@@ -14,8 +14,8 @@
 
         <a href="/Admin/EditPost/@Model.Post.Id" class="btn btn-warning mt-3">Edit post</a>
     }
-    <p class="text-muted">@Model.Post.CreatedDate.ToString("yyyy-MM-dd HH:mm") <img src="img/user.png" /> @Model.PostOwner.FirstName @Model.PostOwner.LastName</p>
-    <hr />
+    <p class="text-muted">@Model.Post.CreatedDate.ToString("yyyy-MM-dd HH:mm") <img src="img/user.png" > @Model.PostOwner.FirstName @Model.PostOwner.LastName</p>
+    <hr >
     <p>@Html.Raw(Model.Post.Content)</p>
     @if (Model.Post.PostImages.Count != 0)
     {
@@ -62,9 +62,9 @@
     @if (User.Identity.IsAuthenticated)
     {
         <form method="post" asp-page-handler="AddComment">
-            <input type="hidden" name="id" value="@Model.Post.Id" />
-            <input type="hidden" name="UserId" value="@Model.Post.UserId)" />
-            <input type="hidden" name="Title" value="_" />
+            <input type="hidden" name="id" value="@Model.Post.Id" >
+            <input type="hidden" name="UserId" value="@Model.Post.UserId)" >
+            <input type="hidden" name="Title" value="_" >
             <div class="form-group">
                 <label for="Content">Add a comment</label>
                 <textarea name="Content" class="form-control" required></textarea>
@@ -84,7 +84,7 @@
                 {
                     <div class="list-group-item">
                         <div id="comment-display-@comment.Id">
-                            <p><img src="img/user2.png" /><strong>   @comment.User.FirstName @comment.User.LastName</strong>  <small>@(comment.UpdatedAt.HasValue ? $"Edytowano: {comment.UpdatedAt}" : $"{comment.CreatedAt}")</small></p>
+                            <p><img src="img/user2.png" ><strong>   @comment.User.FirstName @comment.User.LastName</strong>  <small>@(comment.UpdatedAt.HasValue ? $"Edytowano: {comment.UpdatedAt}" : $"{comment.CreatedAt}")</small></p>
                             <p>@comment.Content</p>
                         </div>
 
@@ -93,11 +93,11 @@
                        || Model.Post.UserId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)
                         {
                             <form method="post" asp-page-handler="DeleteComment" style="display: inline;">
-                                <input type="hidden" name="commentId" value="@comment.Id" />
-                                <input type="hidden" name="id" value="@Model.Post.Id" />
-                                <input type="hidden" name="UserId" value="@Model.Post.UserId)" />
-                                <input type="hidden" name="Content" value="_" />
-                                <input type="hidden" name="Title" value="_" />
+                                <input type="hidden" name="commentId" value="@comment.Id" >
+                                <input type="hidden" name="id" value="@Model.Post.Id" >
+                                <input type="hidden" name="UserId" value="@Model.Post.UserId)" >
+                                <input type="hidden" name="Content" value="_" >
+                                <input type="hidden" name="Title" value="_" >
                                 <button type="submit" class="btn btn-link btn-sm text-danger text-decoration-none custom-edit" title="Delete">
                                     🗑️
                                 </button>
@@ -106,12 +106,12 @@
 
                         <div id="comment-edit-@comment.Id" style="display: none;">
                             <form method="post" asp-page-handler="EditComment" onsubmit="return validateComment(@comment.Id);">
-                                <input type="hidden" name="postId" value="@Model.Post.Id" />
-                                <input type="hidden" name="UserId" value="@comment.UserId" />
-                                <input type="hidden" name="Content" value="_" />
-                                <input type="hidden" name="Title" value="_" />
+                                <input type="hidden" name="postId" value="@Model.Post.Id" >
+                                <input type="hidden" name="UserId" value="@comment.UserId" >
+                                <input type="hidden" name="Content" value="_" >
+                                <input type="hidden" name="Title" value="_" >
 
-                                <input type="hidden" name="commentId" value="@comment.Id" />
+                                <input type="hidden" name="commentId" value="@comment.Id" >
                                 <textarea id="edit-content-@comment.Id" name="updatedContent" class="form-control">@comment.Content</textarea>
                                 <span id="error-message-@comment.Id" class="text-danger" style="display: none;">Comment content cannot be empty!</span>
                                 <button type="submit" class="btn btn-primary btn-sm mt-2">Save</button>
